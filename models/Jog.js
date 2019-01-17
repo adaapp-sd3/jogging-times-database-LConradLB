@@ -6,21 +6,22 @@ var deleteJog = db.prepare(
 )
 
 var insertJog = db.prepare(
-  'INSERT INTO jog (date, duration, distance) VALUES (?, ?, ?)'
+  'INSERT INTO jog (date, duration, distance, userId) VALUES (?, ?, ?, ?)'
 )
 
 console.log(db)
 console.log(db.table)
 var selectJogAll = db.prepare('SELECT * FROM jog')
 var selectJogById = db.prepare('SELECT * FROM jog WHERE id = ?')
+var selectJogByUserId = db.prepare('SELECT * FROM jog WHERE userId = ?')
 var updateJogById = db.prepare('UPDATE jog SET date = ?, duration = ?, distance = ? WHERE id = ?;')
 
 var selectJogByDate = db.prepare('SELECT * FROM jog WHERE duration = ?')
 
 class Jog {
-  static insert(date, duration, distance) {
+  static insert(date, duration, distance, userId) {
     // run the insert query
-    var info = insertJog.run(date, duration, distance)
+    var info = insertJog.run(date, duration, distance, userId)
 
     console.log(info)
     // check what the newly inserted row id is
@@ -46,6 +47,11 @@ class Jog {
 
   static findAll() {
     var allData = selectJogAll.all()
+    return allData
+  }
+
+  static findAllByUserID(id) {
+    var allData = selectJogByUserId.all(id)//.get(id)
     return allData
   }
 

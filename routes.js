@@ -94,26 +94,35 @@ routes.get('/sign-out', function(req, res) {
 
 // list all jog times
 routes.get('/times', function(req, res) {
+//  console.log("req:",req.cookies)
   var loggedInUser = User.findById(req.cookies.userId)
 
   const addition = (accumulator, currentValue) => accumulator + currentValue;
-  console.log("All", Jog.findAll())
-  console.log("Mapped distance", Jog.findAll().map(jog => {return jog.distance}))
+//  console.log("All", Jog.findAll())
+//  console.log("Mapped distance", Jog.findAll().map(jog => {return jog.distance}))
+console.log(Jog.findAllByUserID(req.cookies.userId))
+console.log(typeof Jog.findAllByUserID(req.cookies.userId).distance)
   try{
-    var totalDistance = Jog.findAll().map(jog => {return jog.distance}).reduce(addition)
-    var avgSpeed = (Jog.findAll().map(jog => {return jog.distance}).reduce(addition) / Jog.findAll().map(jog => {return jog.duration}).reduce(addition))
-    var totalTime = Jog.findAll().map(jog => {return jog.duration}).reduce(addition)
+    var totalDistance = (Jog.findAllByUserID(req.cookies.userId)).map(jog => {return jog.distance}).reduce(addition)
+    var avgSpeed = ((Jog.findAllByUserID(req.cookies.userId)).map(jog => {return jog.distance}).reduce(addition) / Jog.findAll().map(jog => {return jog.duration}).reduce(addition))
+    var totalTime = (Jog.findAllByUserID(req.cookies.userId)).map(jog => {return jog.duration}).reduce(addition)
   }catch(error){
+    console.log("error", error)
     var totalDistance = 0
     var avgSpeed = 0
     var totalTime = 0
   }
   
-  var allJogData = Jog.findAll()
-  allJogData.map(obj =>{ 
-    obj.avgSpeed = obj.distance/obj.duration;
-    return obj;
- })
+  var allJogData = Jog.findAllByUserID(req.cookies.userId)
+  console.log(Jog.findAllByUserID(req.cookies.userId))
+  try{
+    allJogData.map(obj =>{ 
+      obj.avgSpeed = obj.distance/obj.duration;
+      return obj;
+  })
+}catch(error){
+  
+ }
 
   res.render('list-times.html', {
     user: loggedInUser,
@@ -144,7 +153,7 @@ routes.post('/times/new', function(req, res) {
 
   console.log('create time', form)
   // TODO: save the new time
-  var newJog = Jog.insert(form.startTime, form.duration, form.distance)
+  var newJog = Jog.insert(form.startTime, form.duration, form.distance, req.cookies.userId)
 
   res.redirect('/times')
 })

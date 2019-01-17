@@ -13,7 +13,7 @@ function formatDateForHTML(date) {
 }
 
 // main page
-routes.get('/', function(req, res) {
+routes.get('/', function (req, res) {
   if (req.cookies.userId) {
     // if we've got a user id, assume we're logged in and redirect to the app:
     res.redirect('/times')
@@ -24,16 +24,16 @@ routes.get('/', function(req, res) {
 })
 
 // show the create account page
-routes.get('/create-account', function(req, res) {
+routes.get('/create-account', function (req, res) {
   res.render('create-account.html')
 })
 
 // handle create account forms:
-routes.post('/create-account', function(req, res) {
+routes.post('/create-account', function (req, res) {
   var form = req.body
 
   // TODO: add some validation in here to check
-  if(!form.email.includes("@")){
+  if (!form.email.includes("@")) {
     return;
   }
 
@@ -51,11 +51,11 @@ routes.post('/create-account', function(req, res) {
 })
 
 // show the sign-in page
-routes.get('/sign-in', function(req, res) {
+routes.get('/sign-in', function (req, res) {
   res.render('sign-in.html')
 })
 
-routes.post('/sign-in', function(req, res) {
+routes.post('/sign-in', function (req, res) {
   var form = req.body
 
   // find the user that's trying to log in
@@ -63,7 +63,6 @@ routes.post('/sign-in', function(req, res) {
 
   // if the user exists...
   if (user) {
-    console.log({ form, user })
     if (bcrypt.compareSync(form.password, user.passwordHash)) {
       // the hashes match! set the log in cookie
       res.cookie('userId', user.id)
@@ -84,7 +83,7 @@ routes.post('/sign-in', function(req, res) {
 })
 
 // handle signing out
-routes.get('/sign-out', function(req, res) {
+routes.get('/sign-out', function (req, res) {
   // clear the user id cookie
   res.clearCookie('userId')
 
@@ -93,36 +92,39 @@ routes.get('/sign-out', function(req, res) {
 })
 
 // list all jog times
-routes.get('/times', function(req, res) {
-//  console.log("req:",req.cookies)
+routes.get('/times', function (req, res) {
+
   var loggedInUser = User.findById(req.cookies.userId)
 
   const addition = (accumulator, currentValue) => accumulator + currentValue;
-//  console.log("All", Jog.findAll())
-//  console.log("Mapped distance", Jog.findAll().map(jog => {return jog.distance}))
-console.log(Jog.findAllByUserID(req.cookies.userId))
-console.log(typeof Jog.findAllByUserID(req.cookies.userId).distance)
-  try{
-    var totalDistance = (Jog.findAllByUserID(req.cookies.userId)).map(jog => {return jog.distance}).reduce(addition)
-    var avgSpeed = ((Jog.findAllByUserID(req.cookies.userId)).map(jog => {return jog.distance}).reduce(addition) / Jog.findAll().map(jog => {return jog.duration}).reduce(addition))
-    var totalTime = (Jog.findAllByUserID(req.cookies.userId)).map(jog => {return jog.duration}).reduce(addition)
-  }catch(error){
+
+  try {
+    var totalDistance = (Jog.findAllByUserID(req.cookies.userId)).map(jog => {
+      return jog.distance
+    }).reduce(addition)
+    var avgSpeed = ((Jog.findAllByUserID(req.cookies.userId)).map(jog => {
+      return jog.distance
+    }).reduce(addition) / Jog.findAll().map(jog => {
+      return jog.duration
+    }).reduce(addition))
+    var totalTime = (Jog.findAllByUserID(req.cookies.userId)).map(jog => {
+      return jog.duration
+    }).reduce(addition)
+  } catch (error) {
     console.log("error", error)
     var totalDistance = 0
     var avgSpeed = 0
     var totalTime = 0
   }
-  
+
   var allJogData = Jog.findAllByUserID(req.cookies.userId)
-  console.log(Jog.findAllByUserID(req.cookies.userId))
-  try{
-    allJogData.map(obj =>{ 
-      obj.avgSpeed = obj.distance/obj.duration;
+
+  try {
+    allJogData.map(obj => {
+      obj.avgSpeed = obj.distance / obj.duration;
       return obj;
-  })
-}catch(error){
-  
- }
+    })
+  } catch (error) { }
 
   res.render('list-times.html', {
     user: loggedInUser,
@@ -138,7 +140,7 @@ console.log(typeof Jog.findAllByUserID(req.cookies.userId).distance)
 })
 
 // show the create time form
-routes.get('/times/new', function(req, res) {
+routes.get('/times/new', function (req, res) {
   // this is hugely insecure. why?
   var loggedInUser = User.findById(req.cookies.userId)
 
@@ -148,7 +150,7 @@ routes.get('/times/new', function(req, res) {
 })
 
 // handle the create time form
-routes.post('/times/new', function(req, res) {
+routes.post('/times/new', function (req, res) {
   var form = req.body
 
   console.log('create time', form)
@@ -159,9 +161,9 @@ routes.post('/times/new', function(req, res) {
 })
 
 // show the edit time form for a specific time
-routes.get('/times/:id', function(req, res) {
+routes.get('/times/:id', function (req, res) {
   var timeId = req.params.id
-  console.log('get time', timeId)
+
   var jogData = Jog.findById(timeId)
   // TODO: get the real time for this id from the db
   var jogTime = {
@@ -177,14 +179,9 @@ routes.get('/times/:id', function(req, res) {
 })
 
 // handle the edit time form
-routes.post('/times/:id', function(req, res) {
+routes.post('/times/:id', function (req, res) {
   var timeId = req.params.id
   var form = req.body
-
-  console.log('edit time', {
-    timeId: timeId,
-    form: form
-  })
 
   Jog.updateJogById(form.startTime, form.duration, form.distance, timeId)
 
@@ -194,9 +191,8 @@ routes.post('/times/:id', function(req, res) {
 })
 
 // handle deleteing the time
-routes.get('/times/:id/delete', function(req, res) {
+routes.get('/times/:id/delete', function (req, res) {
   var timeId = req.params.id
-  console.log('delete time', timeId)
 
   // TODO: delete the time
   Jog.deleteTimeByID(timeId)

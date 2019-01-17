@@ -23,7 +23,6 @@ class Jog {
     // run the insert query
     var info = insertJog.run(date, duration, distance, userId)
 
-    console.log(info)
     // check what the newly inserted row id is
     var jogId = info.lastInsertRowid
 
@@ -51,7 +50,7 @@ class Jog {
   }
 
   static findAllByUserID(id) {
-    var allData = selectJogByUserId.all(id)//.get(id)
+    var allData = selectJogByUserId.all(id)
     return allData
   }
 

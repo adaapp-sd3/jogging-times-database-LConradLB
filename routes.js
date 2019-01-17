@@ -2,6 +2,7 @@ var express = require('express')
 var bcrypt = require('bcrypt')
 
 var User = require('./models/User')
+var Jog = require('./models/Jog')
 
 var routes = new express.Router()
 
@@ -32,6 +33,9 @@ routes.post('/create-account', function(req, res) {
   var form = req.body
 
   // TODO: add some validation in here to check
+  if(!form.email.includes("@")){
+    return;
+  }
 
   // hash the password - we dont want to store it directly
   var passwordHash = bcrypt.hashSync(form.password, saltRounds)
@@ -88,14 +92,28 @@ routes.get('/sign-out', function(req, res) {
   res.redirect('/sign-in')
 })
 
-// list all job times
+// list all jog times
 routes.get('/times', function(req, res) {
   var loggedInUser = User.findById(req.cookies.userId)
 
-  // fake stats - TODO: get real stats from the database
-  var totalDistance = 13.45
-  var avgSpeed = 5.42
-  var totalTime = 8.12322
+  const addition = (accumulator, currentValue) => accumulator + currentValue;
+  console.log("All", Jog.findAll())
+  console.log("Mapped distance", Jog.findAll().map(jog => {return jog.distance}))
+  try{
+    var totalDistance = Jog.findAll().map(jog => {return jog.distance}).reduce(addition)
+    var avgSpeed = (Jog.findAll().map(jog => {return jog.distance}).reduce(addition) / Jog.findAll().map(jog => {return jog.duration}).reduce(addition))
+    var totalTime = Jog.findAll().map(jog => {return jog.duration}).reduce(addition)
+  }catch(error){
+    var totalDistance = 0
+    var avgSpeed = 0
+    var totalTime = 0
+  }
+  
+  var allJogData = Jog.findAll()
+  allJogData.map(obj =>{ 
+    obj.avgSpeed = obj.distance/obj.duration;
+    return obj;
+ })
 
   res.render('list-times.html', {
     user: loggedInUser,
@@ -105,30 +123,8 @@ routes.get('/times', function(req, res) {
       avgSpeed: avgSpeed.toFixed(2)
     },
 
-    // fake times: TODO: get the real jog times from the db
-    times: [
-      {
-        id: 1,
-        startTime: '4:36pm 1/11/18',
-        duration: 12.23,
-        distance: 65.43,
-        avgSpeed: 5.34
-      },
-      {
-        id: 2,
-        startTime: '2:10pm 3/11/18',
-        duration: 67.4,
-        distance: 44.43,
-        avgSpeed: 0.66
-      },
-      {
-        id: 3,
-        startTime: '3:10pm 4/11/18',
-        duration: 67.4,
-        distance: 44.43,
-        avgSpeed: 0.66
-      }
-    ]
+    // show all times
+    times: allJogData
   })
 })
 
@@ -147,8 +143,8 @@ routes.post('/times/new', function(req, res) {
   var form = req.body
 
   console.log('create time', form)
-
   // TODO: save the new time
+  var newJog = Jog.insert(form.startTime, form.duration, form.distance)
 
   res.redirect('/times')
 })
@@ -157,13 +153,13 @@ routes.post('/times/new', function(req, res) {
 routes.get('/times/:id', function(req, res) {
   var timeId = req.params.id
   console.log('get time', timeId)
-
+  var jogData = Jog.findById(timeId)
   // TODO: get the real time for this id from the db
   var jogTime = {
     id: timeId,
-    startTime: formatDateForHTML('2018-11-4 15:17'),
-    duration: 67.4,
-    distance: 44.43
+    startTime: jogData.date,
+    duration: jogData.duration,
+    distance: jogData.distance
   }
 
   res.render('edit-time.html', {
@@ -181,6 +177,8 @@ routes.post('/times/:id', function(req, res) {
     form: form
   })
 
+  Jog.updateJogById(form.startTime, form.duration, form.distance, timeId)
+
   // TODO: edit the time in the db
 
   res.redirect('/times')
@@ -192,6 +190,7 @@ routes.get('/times/:id/delete', function(req, res) {
   console.log('delete time', timeId)
 
   // TODO: delete the time
+  Jog.deleteTimeByID(timeId)
 
   res.redirect('/times')
 })

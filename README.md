@@ -10,19 +10,19 @@ There's also code for a basic (and quiet insecure!) user login system.
 Your task is to implement the backend and database to allow the app to meet the
 following requirements:
 
-- Users can create accounts with a name, email address, and password
-- User passwords are stored securely according to best practise
-- Users can log into their account
-- Logged in users can log out of their account
+- Users can create accounts with a name, email address, and password /
+- User passwords are stored securely according to best practise / 
+- Users can log into their account / 
+- Logged in users can log out of their account/
 - The main page of the app shows:
   - A set of statistics - total distance, total duration, and average speed
-    across all jogs
-  - A 'add new jogging time' button
-  - A list of every previous jogging time
+    across all jogs /
+  - A 'add new jogging time' button /
+  - A list of every previous jogging time/
 - Clicking on the 'add new jogging time' button takes the user to a form where
-  they can create jogging times
+  they can create jogging times/
 - Clicking on an existing jogging time takes the user to a form where they can
-  edit or delete the time
+  edit or delete the time/
 - Improve the general app security through e.g. form validations, revising the
   login system, etc.
 

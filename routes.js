@@ -91,6 +91,16 @@ routes.get('/sign-out', function (req, res) {
   res.redirect('/sign-in')
 })
 
+routes.get('/delete', function (req, res) {
+  User.delete(req.cookies.userId)
+  // clear the user id cookie
+  res.clearCookie('userId')
+  console.log("USER DELETED WITH ID: ", req.cookies.userId)
+  // redirect to the login screen
+  res.redirect('/sign-in')
+})
+
+
 // list all jog times
 routes.get('/times', function (req, res) {
 

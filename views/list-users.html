@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Jog Times</title>
+
+    <!-- Tailwind.css is a CSS library. Read the docs here: -->
+    <!-- https://tailwindcss.com/docs/what-is-tailwind -->
+    <link rel="stylesheet" href="/tailwind.css" />
+</head>
+
+<body class="bg-grey-lightest">
+    <header class="fixed pin-x pin-t bg-purple shadow text-white">
+        <div class="mx-auto h-16 p-4 flex items-center justify-between" style="width: 800px">
+            <h2>Jog Times</h2>
+            <div>
+                Signed in as {{ user.name }} ({{ user.email }})
+                <a href="/sign-out" class="text-white border border-white rounded p-2 no-underline hover:bg-purple-light ml-4">
+                    Sign Out
+                </a>
+                <a href="/delete" class="text-white border border-white rounded p-2 no-underline hover:bg-purple-light ml-4">
+                    Delete Account
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main style="width: 800px" class="mx-auto mt-16 pt-4 flex flex-col justify-center ">
+        <section class="flex flex-wrap border border-grey-light border-l-0 border-r-0 border-b-0 mt-6 pt-6">
+
+            {{#each users}}
+            <a class="flex-auto w-64 m-4 p-5 bg-white shadow rounded-lg text-black no-underline" href="/follow/{{ id }}">
+                <h3 class="text-grey-darker uppercase text-base font-normal">
+                    {{ name }}
+                </h3>
+
+                <p class="text-white p-2 bg-indigo-darker items-center text-indigo-lightest leading-none lg:rounded-full flex lg:inline-flex hover:bg-purple-light ml-8 text-center" style="width: 80%; margin-top: 6px">
+                    {{ isFollowed }}
+                </p>
+            </a>
+            {{/each}}
+        </section>
+
+        <section class="flex flex-wrap border border-grey-light border-l-0 border-r-0 border-b-0 mt-6 pt-6">
+            <h1>Followers</h1>
+            {{#each followers}}
+            <a class="flex-auto w-64 m-4 p-5 bg-white shadow rounded-lg text-black no-underline">
+                <h3 class="text-grey-darker uppercase text-base font-normal">
+                    <!-- Add follower name or ID to populate here -->
+                </h3>
+            </a>
+            {{/each}}
+        </section>
+    </main>
+</body>
+
+</html>

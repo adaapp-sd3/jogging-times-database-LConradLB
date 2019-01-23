@@ -95,7 +95,6 @@ routes.get('/delete', function (req, res) {
   User.delete(req.cookies.userId)
   // clear the user id cookie
   res.clearCookie('userId')
-  console.log("USER DELETED WITH ID: ", req.cookies.userId)
   // redirect to the login screen
   res.redirect('/sign-in')
 })
@@ -208,6 +207,38 @@ routes.get('/times/:id/delete', function (req, res) {
   Jog.deleteTimeByID(timeId)
 
   res.redirect('/times')
+})
+
+// list all users
+routes.get('/users', function (req, res) {
+
+  var loggedInUser = User.findById(req.cookies.userId)
+  var allUsers = User.selectAllUsers()
+  var followers = User.getFollowing(req.cookies.userId)
+
+  for (var user in allUsers){
+    if(User.isFollowingUser(loggedInUser.id, allUsers[user].id) == 1){
+      allUsers[user].isFollowed = "Following"
+    }else{
+      allUsers[user].isFollowed = "Follow"
+    }
+  }
+
+  res.render('list-users.html', {
+    user: loggedInUser,
+    // show all users
+    users: allUsers,
+    followers: followers
+  })
+})
+
+routes.get('/follow/:id', function (req, res) {
+  var targetFollowerId = req.params.id
+
+  // TODO: delete the time
+  User.followUser(req.cookies.userId, req.params.id)
+
+  res.redirect('/users')
 })
 
 module.exports = routes

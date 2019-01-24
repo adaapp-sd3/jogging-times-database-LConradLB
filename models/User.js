@@ -14,7 +14,9 @@ var checkIfFollowingUser = db.prepare(
 )
 
 //GET THE ACTUAL USERS FROM THE USERS TABLE
-var getFollowing = db.prepare('SELECT sourceUserId FROM following where targetUserId = ?')
+//var getFollowing = db.prepare('SELECT sourceUserId FROM following where targetUserId = ?')
+
+var getFollowing = db.prepare('SELECT * FROM user INNER JOIN following ON user.id = following.sourceUserId WHERE targetUserId = ?')
 
 var unfollowUser = db.prepare('DELETE FROM following WHERE sourceUserId = ? AND targetUserId = ?')
 
@@ -104,7 +106,7 @@ class User {
   }
 
   static getFollowing(origin){
-    return getFollowing.get(origin)
+    return getFollowing.all(origin)
   }
 }
 

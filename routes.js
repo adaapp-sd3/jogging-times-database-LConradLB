@@ -3,6 +3,7 @@ var bcrypt = require('bcrypt')
 
 var User = require('./models/User')
 var Jog = require('./models/Jog')
+var Utility = require('./Utility')
 
 var routes = new express.Router()
 
@@ -172,7 +173,7 @@ routes.post('/times/new', function (req, res) {
 // show the edit time form for a specific time
 routes.get('/times/:id', function (req, res) {
   var timeId = req.params.id
-
+  var user = User.findById(req.cookies.userId)
   var jogData = Jog.findById(timeId)
   // TODO: get the real time for this id from the db
   var jogTime = {
@@ -183,6 +184,7 @@ routes.get('/times/:id', function (req, res) {
   }
 
   res.render('edit-time.html', {
+    user: user,
     time: jogTime
   })
 })
@@ -214,13 +216,27 @@ routes.get('/users', function (req, res) {
 
   var loggedInUser = User.findById(req.cookies.userId)
   var allUsers = User.selectAllUsers()
-  var followers = User.getFollowing(req.cookies.userId)
+  var allFollowers = User.getFollowing(req.cookies.userId)
+  var jogData = Jog.getAllFollowingJogs(req.cookies.userId)
+
+  jogData.forEach(function(run) {
+    run.month = Utility.parseMonth(run['strftime("%m",jog.date)'])
+    run.day = run['strftime("%d",jog.date)']
+    run.year = run['strftime("%Y",jog.date)']
+  })
+
+  console.log(jogData)
 
   for (var user in allUsers){
-    if(User.isFollowingUser(loggedInUser.id, allUsers[user].id) == 1){
-      allUsers[user].isFollowed = "Following"
+    if(allUsers[user].id == loggedInUser.id){
+      allUsers[user].isFollowed = "You can't follow yourself"
+      //Remove self from array
     }else{
-      allUsers[user].isFollowed = "Follow"
+      if(User.isFollowingUser(loggedInUser.id, allUsers[user].id) == 1){
+        allUsers[user].isFollowed = "Following"
+      }else{
+        allUsers[user].isFollowed = "Follow"
+      }
     }
   }
 
@@ -228,8 +244,11 @@ routes.get('/users', function (req, res) {
     user: loggedInUser,
     // show all users
     users: allUsers,
-    followers: followers
+    followers: allFollowers,
+    allJogs: jogData
   })
+
+  console.log("Followers",allFollowers)
 })
 
 routes.get('/follow/:id', function (req, res) {
@@ -240,5 +259,6 @@ routes.get('/follow/:id', function (req, res) {
 
   res.redirect('/users')
 })
+
 
 module.exports = routes

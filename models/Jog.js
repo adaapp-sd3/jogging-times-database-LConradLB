@@ -11,6 +11,8 @@ var insertJog = db.prepare(
 
 console.log(db)
 console.log(db.table)
+
+var getAllJogsWithAllUsers = db.prepare('SELECT user.name, jog.distance, jog.duration, jog.date, strftime("%m",jog.date), strftime("%d",jog.date), strftime("%Y",jog.date) FROM jog INNER JOIN user ON user.id = jog.userId INNER JOIN following ON following.targetUserId = user.id WHERE following.sourceUserId = ? ORDER BY jog.date ASC')
 var selectJogAll = db.prepare('SELECT * FROM jog')
 var selectJogById = db.prepare('SELECT * FROM jog WHERE id = ?')
 var selectJogByUserId = db.prepare('SELECT * FROM jog WHERE userId = ?')
@@ -52,6 +54,10 @@ class Jog {
   static findAllByUserID(id) {
     var allData = selectJogByUserId.all(id)
     return allData
+  }
+
+  static getAllFollowingJogs(id){
+    return getAllJogsWithAllUsers.all(id)
   }
 
   static deleteTimeByID(id){

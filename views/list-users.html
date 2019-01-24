@@ -16,6 +16,11 @@
             <h2>Jog Times</h2>
             <div>
                 Signed in as {{ user.name }} ({{ user.email }})
+
+                <a href="/times" class="text-white border border-white rounded p-2 no-underline hover:bg-purple-light ml-4">
+                    Times
+                </a>
+
                 <a href="/sign-out" class="text-white border border-white rounded p-2 no-underline hover:bg-purple-light ml-4">
                     Sign Out
                 </a>
@@ -27,6 +32,7 @@
     </header>
 
     <main style="width: 800px" class="mx-auto mt-16 pt-4 flex flex-col justify-center ">
+        <h1 style="margin-top: 50px;">All Users</h1>
         <section class="flex flex-wrap border border-grey-light border-l-0 border-r-0 border-b-0 mt-6 pt-6">
 
             {{#each users}}
@@ -41,16 +47,41 @@
             </a>
             {{/each}}
         </section>
+        
 
+        <h1 style="margin-top: 50px;">Followers</h1>
         <section class="flex flex-wrap border border-grey-light border-l-0 border-r-0 border-b-0 mt-6 pt-6">
-            <h1>Followers</h1>
             {{#each followers}}
             <a class="flex-auto w-64 m-4 p-5 bg-white shadow rounded-lg text-black no-underline">
                 <h3 class="text-grey-darker uppercase text-base font-normal">
-                    <!-- Add follower name or ID to populate here -->
+                   {{ name }}
                 </h3>
             </a>
             {{/each}}
+        </section>
+
+        <h1 style="margin-top: 50px;">Following Run Timeline</h1>
+        <section class="flex flex-wrap border border-grey-light border-l-0 border-r-0 border-b-0 mt-6 pt-6">
+            <div class="timeline">
+                <!-- <div class="timeline__group"> -->
+                  <!-- <span class="timeline__year">2008</span> -->
+                  {{#each allJogs}}
+                  <div class="timeline__box">
+                    <div class="timeline__date">
+                      <span class="timeline__day">{{ day }}</span>
+                      <span class="timeline__month"> {{ month }} </span>
+                    </div>
+                    <div class="timeline__post">
+                      <div class="timeline__content">
+                        <h3>Name: {{ name }}</h3>
+                        <p>Distance: {{ distance }}HRs</p>
+                        <p>Duration: {{ duration }}KM</p>
+                      </div>
+                    </div>
+                  </div>
+                {{/each}}
+                <!-- </div> -->
+            </div>
         </section>
     </main>
 </body>

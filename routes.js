@@ -2,6 +2,7 @@ var express = require('express')
 var bcrypt = require('bcrypt')
 
 var User = require('./models/User')
+var UserMetadata = require('./models/UserMetadata')
 var Jog = require('./models/Jog')
 var Utility = require('./Utility')
 
@@ -116,6 +117,7 @@ routes.get('/times', function (req, res) {
     var totalTime = (Jog.findAllByUserID(req.cookies.userId)).map(jog => {
       return jog.duration
     }).reduce(addition)
+    UserMetadata.modifyUserMetadata(req.cookies.userId, totalDistance, totalTime, avgSpeed)
   } catch (error) {
     console.log("error", error)
     var totalDistance = 0

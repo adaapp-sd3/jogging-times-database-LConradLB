@@ -112,11 +112,7 @@ routes.get('/times', function (req, res) {
     var totalDistance = (Jog.findAllByUserID(req.cookies.userId)).map(jog => {
       return jog.distance
     }).reduce(addition)
-    var avgSpeed = ((Jog.findAllByUserID(req.cookies.userId)).map(jog => {
-      return jog.distance
-    }).reduce(addition) / Jog.findAll().map(jog => {
-      return jog.duration
-    }).reduce(addition))
+    var avgSpeed = ((Jog.findAllByUserID(req.cookies.userId)).map(jog => { return jog.distance}).reduce(addition) / Jog.findAllByUserID(req.cookies.userId).map(jog => { return jog.duration }).reduce(addition))
     var totalTime = (Jog.findAllByUserID(req.cookies.userId)).map(jog => {
       return jog.duration
     }).reduce(addition)

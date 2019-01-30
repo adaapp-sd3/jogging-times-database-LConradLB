@@ -249,6 +249,7 @@ routes.get('/users', function (req, res) {
   console.log("Followers",allFollowers)
 })
 
+
 routes.get('/follow/:id', function (req, res) {
   var targetFollowerId = req.params.id
 
@@ -258,5 +259,50 @@ routes.get('/follow/:id', function (req, res) {
   res.redirect('/users')
 })
 
+// show the edit time form for a specific time
+routes.get('/rankings-distance', function (req, res) {
+  var user = User.findById(req.cookies.userId)
+  // TODO: get the real time for this id from the db
+  var distanceRanking = UserMetadata.retrieveFollowersJogsByDistance(user.id)
+  var userData = UserMetadata.retrieveUserMetadata(user.id)
+  userData.value = userData.totalDistance
+  distanceRanking.push(userData)
+  distanceRanking.sort((a,b) => (a.value < b.value) ? 1 : ((b.value < a.value) ? -1 : 0)); 
+  console.log("ranking", distanceRanking)
+  res.render('list-rankings.html', {
+    user: user,
+    ranking: distanceRanking
+  })
+})
+
+routes.get('/rankings-duration', function (req, res) {
+  var user = User.findById(req.cookies.userId)
+  // TODO: get the real time for this id from the db
+  var distanceRanking = UserMetadata.retrieveFollowersJogsByTime(user.id)
+  var userData = UserMetadata.retrieveUserMetadata(user.id)
+  userData.value = userData.totalDuration
+  distanceRanking.push(userData)
+  distanceRanking.sort((a,b) => (a.value < b.value) ? 1 : ((b.value < a.value) ? -1 : 0)); 
+  console.log("ranking", distanceRanking)
+  res.render('list-rankings.html', {
+    user: user,
+    ranking: distanceRanking
+  })
+})
+
+routes.get('/rankings-speed', function (req, res) {
+  var user = User.findById(req.cookies.userId)
+  // TODO: get the real time for this id from the db
+  var distanceRanking = UserMetadata.retrieveFollowersJogsBySpeed(user.id)
+  var userData = UserMetadata.retrieveUserMetadata(user.id)
+  userData.value = userData.averageSpeed
+  distanceRanking.push(userData)
+  distanceRanking.sort((a,b) => (a.value < b.value) ? 1 : ((b.value < a.value) ? -1 : 0)); 
+  console.log("ranking", distanceRanking)
+  res.render('list-rankings.html', {
+    user: user,
+    ranking: distanceRanking
+  })
+})
 
 module.exports = routes

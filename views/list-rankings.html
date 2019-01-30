@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Jog Rankings</title>
+
+    <!-- Tailwind.css is a CSS library. Read the docs here: -->
+    <!-- https://tailwindcss.com/docs/what-is-tailwind -->
+    <link rel="stylesheet" href="/tailwind.css" />
+</head>
+
+<body class="bg-grey-lightest">
+    <header class="fixed pin-x pin-t bg-purple shadow text-white">
+        <div class="mx-auto h-16 p-4 flex items-center justify-between" style="width: 900px">
+            <h2>Jog Times</h2>
+            <div>
+                Signed in as {{ user.name }} ({{ user.email }})
+
+                <a href="/times" class="text-white border border-white rounded p-2 no-underline hover:bg-purple-light ml-4">
+                    Times
+                </a>
+
+                <a href="/users" class="text-white border border-white rounded p-2 no-underline hover:bg-purple-light ml-4">
+                    Users
+                </a>
+
+                <a href="/sign-out" class="text-white border border-white rounded p-2 no-underline hover:bg-purple-light ml-4">
+                    Sign Out
+                </a>
+                <a href="/delete" class="text-white border border-white rounded p-2 no-underline hover:bg-purple-light ml-4">
+                    Delete Account
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main style="width: 800px" class="mx-auto mt-16 pt-4 flex flex-col justify-center ">
+        <h1 style="margin-top: 50px;">Rankings</h1>
+        <section class="flex flex-wrap border border-grey-light border-l-0 border-r-0 border-b-0 mt-6 pt-6">
+            <table style="width:100%; margin-bottom: 20px; margin-left: auto; margin-right: auto;">
+                <tr>
+                    <td>
+                        <a href="/rankings-distance" class="text-white border border-white bg-purple-light rounded p-2 no-underline hover:bg-white hover:text-purple-light hover:border-purple-light ml-4">
+                            Distance
+                        </a>
+                    </td>
+                    <td>
+                        <a href="/rankings-duration" class="text-white border border-white bg-purple-light rounded p-2 no-underline hover:bg-white hover:text-purple-light hover:border-purple-light ml-4">
+                            Duration
+                        </a>
+                    </td>
+                    <td>
+                        <a href="/rankings-speed" class="text-white border border-white bg-purple-light rounded p-2 no-underline hover:bg-white hover:text-purple-light hover:border-purple-light ml-4">
+                            Speed
+                        </a>
+                    </td>
+                </tr>
+            </table>
+
+            {{#each ranking}}
+            <a class="m-4 p-5 bg-white shadow rounded-lg text-black no-underline" style="width: 100%;">
+                <table>
+                    <tr style="width:100%;">
+                        <td class="text-grey-darker uppercase text-base font-normal">{{ name }}</td>
+                        <td class="text-purple-light uppercase text-base font-normal">{{ value }} KM</td>
+                    </tr>
+                </table>
+            </a>
+            {{/each}}
+        </section>
+
+    </main>
+</body>
+
+</html>

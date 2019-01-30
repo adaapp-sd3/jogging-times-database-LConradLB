@@ -40,6 +40,18 @@ class UserMetadata {
         }
     }
 
+    static retrieveFollowersJogsByDistance(userID) {
+        getFollowersJogsByDistance(userID)
+    }
+
+    static retrieveFollowersJogsByTime(userID) {
+        getFollowersJogsByTime(userID)
+    }
+
+    static retrieveFollowersJogsBySpeed(userID) {
+        getFollowersJogsBySpeed(userID)
+    }
+
 }
 
 module.exports = UserMetadata

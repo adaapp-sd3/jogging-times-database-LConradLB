@@ -35,7 +35,7 @@ routes.post('/create-account', function (req, res) {
   var form = req.body
 
   // TODO: add some validation in here to check
-  if (!form.email.includes("@")) {
+  if (!form.email.includes("@") && !form.email.includes(".")) {
     return;
   }
 
@@ -271,7 +271,8 @@ routes.get('/rankings-distance', function (req, res) {
   console.log("ranking", distanceRanking)
   res.render('list-rankings.html', {
     user: user,
-    ranking: distanceRanking
+    ranking: distanceRanking,
+    sortedby: "Distance"
   })
 })
 
@@ -286,7 +287,8 @@ routes.get('/rankings-duration', function (req, res) {
   console.log("ranking", distanceRanking)
   res.render('list-rankings.html', {
     user: user,
-    ranking: distanceRanking
+    ranking: distanceRanking,
+    sortedby: "Duration"
   })
 })
 
@@ -301,7 +303,8 @@ routes.get('/rankings-speed', function (req, res) {
   console.log("ranking", distanceRanking)
   res.render('list-rankings.html', {
     user: user,
-    ranking: distanceRanking
+    ranking: distanceRanking,
+    sortedby: "Speed"
   })
 })
 

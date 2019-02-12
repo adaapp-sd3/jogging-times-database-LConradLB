@@ -1,6 +1,5 @@
 class Utility {
     static parseMonth(number) {
-        console.log("Parse Month", number)
         switch(number){
             case "0" : return "Jan"
             case "01" : return "Feb"

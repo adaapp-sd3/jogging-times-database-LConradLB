@@ -34,13 +34,10 @@ var checkIfUserExistsInTable = db.prepare(
 class UserMetadata {
 
     static modifyUserMetadata(userID, totalDistance, totalDuration, averageSpeed) {
-        console.log(checkIfUserExistsInTable.get(userID)['EXISTS (SELECT 1 FROM userMetadata WHERE userId = ?)'] == 1)
         if (checkIfUserExistsInTable.get(userID)['EXISTS (SELECT 1 FROM userMetadata WHERE userId = ?)'] == 1) {
             updateUserMetadata.run(totalDistance, totalDuration, averageSpeed, userID)
-            console.log("Modified User")
         } else {
             addUserMetadata.run(userID, totalDistance, totalDuration, averageSpeed)
-            console.log("Added user")
         }
     }
 

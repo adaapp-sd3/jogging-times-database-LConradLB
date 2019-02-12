@@ -35,7 +35,8 @@ routes.post('/create-account', function (req, res) {
   var form = req.body
 
   // TODO: add some validation in here to check
-  if (!form.email.includes("@") && !form.email.includes(".")) {
+  if (!form.email.includes("@") || !form.email.includes(".")) {
+    res.redirect('/create-account', { error: "Please enter a valid email" })
     return;
   }
 
